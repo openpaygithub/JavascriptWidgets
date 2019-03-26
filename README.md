@@ -18,6 +18,7 @@
 ### 1. Add JamAuth Token for authenticating plugin - 
 ```javascript
 var JamAuthToken = "30000000000000889|155f5b95-a40a-4ae5-8273-41ae83fec8c9";
+var	authToken = "OP 3340|EC3C629D-CF23-4045-A07A-38A21D39AC16";
 var opCurrency = "&pound;";
 ```
 
@@ -96,13 +97,13 @@ var productListClasses = {
 };
 
 var ProductListOpenpayInfo = {
-    authToken : "3-507|A4AEB753-EBBE-4AFF-8858-E2CB4CFEC348",
     text: 'fractional',                  // text for openpay widget
     logo: 'op_logo_normal',              // format for openpay logo
     payOfMonth: '2',
     frequency: 'Fortnightly',
     showLearnMore: false,                // show learn more link
     styles: {
+        textAlign: 'center',
         fontFamily: 'Times New Roman", Times, serif',   // for specifying font family
         fontStyle: 'normal',                            // for specifying font-style
         fontSize: '14px',                               // For specifying font-size
@@ -165,7 +166,6 @@ var checkoutClasses = {
 ```javascript
 //Add Checkout Widget Settings
 var checkoutSettings = {
-    authToken: "OP 3340|EC3C629D-CF23-4045-A07A-38A21D39AC16",
     payOfMonth: [2, 3],
     frequency: ['Fortnightly', 'Weekly'],               //'Fortnightly','Weekly'
     logo: 'op_logo_normal',                             // use logo format
