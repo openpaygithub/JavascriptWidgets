@@ -24,8 +24,8 @@ var opCurrency = "&pound;";
 
 ```javascript
 // List of Currency Symbols
-DOLLAR - &dollar;  // $
-POUND  - &pound;   // £
+DOLLAR - &dollar;       // $
+POUND  - &pound;        // £
 ```
 
 
@@ -91,17 +91,17 @@ var notificationBar = {
 ### 3. Add Openpay Price list widget -
 ```javascript
 var productListClasses = {
-    productParentPrice: '.price',        // class for class containing prices of products
-    productAlternatePrice: '.price',      // class containing actual amount of product
+    productParentPrice: '.price',                       // class for class containing prices of products
+    productAlternatePrice: '.price',                    // class containing actual amount of product
     variations : ['.variations'],
 };
 
 var ProductListOpenpayInfo = {
-    text: 'fractional',                  // text for openpay widget
-    logo: 'op_logo_normal',              // format for openpay logo
+    text: 'fractional',                                 // text for openpay widget
+    logo: 'op_logo_normal',                             // format for openpay logo
     payOfMonth: '2',
     frequency: 'Fortnightly',
-    showLearnMore: false,                // show learn more link
+    showLearnMore: false,                               // show learn more link
     styles: {
         textAlign: 'center',
         fontFamily: 'Times New Roman", Times, serif',   // for specifying font family
@@ -119,10 +119,10 @@ var ProductListOpenpayInfo = {
 ```javascript
 // [ text message format - ]
 {
-    text: 'normal',      // Or $8 today and more time to pay with
-    text: 'fractional',  // Or $10.2 today and rest with 9 payments of $5.1 with
+    text: 'normal',                                     // Or $8 today and more time to pay with
+    text: 'fractional',                                 // Or $10.2 today and rest with 9 payments of $5.1 with
     text: 'fractional_frequency',
-    text: 'noprice'      // Or more time to pay with
+    text: 'noprice'                                     // Or more time to pay with
 }
 ```
 
@@ -140,15 +140,15 @@ var ProductListOpenpayInfo = {
 
 ```javascript
 var miniCartClasses = {
-    cartParent: '.woo_amc_container_wrap_right',    // main parent div class
-    cartContent: '.woo_amc_items_scroll',           // parent div class of cart
-    totalPrice: '.woo_amc_footer_total'             // div class of total price
+    cartParent: '.woo_amc_container_wrap_right',        // main parent div class
+    cartContent: '.woo_amc_items_scroll',               // parent div class of cart
+    totalPrice: '.woo_amc_footer_total'                 // div class of total price
 }
 ```
 
 ```javascript
 var miniCartSettings = {
-    logo: 'op_logo_icon_normal'                // change mini-cart logo pattern
+    logo: 'op_logo_icon_normal'                         // change mini-cart logo pattern
 }
 ```
 
