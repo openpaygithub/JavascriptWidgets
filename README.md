@@ -19,13 +19,13 @@
 ```javascript
 var JamAuthToken = "30000000000000889|155f5b95-a40a-4ae5-8273-41ae83fec8c9";
 var authToken = "OP 3340|EC3C629D-CF23-4045-A07A-38A21D39AC16";
-var opCurrency = "&pound;";
+var opCountryCode = "UK";
 ```
 
 ```javascript
-// List of Currency Symbols
-DOLLAR - &dollar;       // $
-POUND  - &pound;        // £
+// List of Country Code
+opCountryCode = "AU";
+opCountryCode = "UK";
 ```
 
 
