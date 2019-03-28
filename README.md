@@ -102,6 +102,7 @@ var ProductListOpenpayInfo = {
     payOfMonth: '2',
     frequency: 'Fortnightly',
     showLearnMore: false,                               // show learn more link
+    showOpenpayMsg: false,                              // add true to show openpay message not in range.
     styles: {
         textAlign: 'center',
         fontFamily: 'Times New Roman", Times, serif',   // for specifying font family
