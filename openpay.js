@@ -3,7 +3,7 @@ var authPayload = { "token": { JamAuthToken, "openpay_url_mode": "Training" } };
 var openpayImgPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img';
 var openpayLogoPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img/op-logos';
 
-// const opCurrencySymbols = ['$', '£', '₹', '€'];
+// const opCurrencySymbols = ['$', 'Â£', 'â‚¹', 'â‚¬'];
 
 // let opPriceCurrency = document.querySelectorAll(productListClasses.productParentPrice);
 // if (!opPriceCurrency.length) {
@@ -16,6 +16,8 @@ var openpayLogoPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img/op-l
 //   };
 // }
 
+const activateNotificationSlider = typeof (notificationBar) !== 'undefined' && true || false;
+
 const activateMiniCart = typeof (miniCartClasses) !== 'undefined' && true || false;
 
 const checkoutSettingsExists = typeof (checkoutSettings) !== 'undefined' && true || false;
@@ -24,7 +26,14 @@ const activateProductList = typeof (productListClasses) !== 'undefined' && true 
 
 const popupSettingsExists = typeof (LearnMorePopUpSettings) !== 'undefined' && true || false;
 
-const op_currency = typeof (opCurrency) !== 'undefined' && opCurrency || '';
+// const op_currency = typeof (opCurrency) !== 'undefined' && opCurrency || '';
+
+const op_countryCode = typeof (opCountryCode) !== 'undefined' && opCountryCode || '';
+
+const country_name = op_countryCode === 'AU' && 'Australia' || op_countryCode === 'UK' && 'United Kingdom' || '';
+
+const op_currency = op_countryCode === 'AU' && '$' || op_countryCode === 'UK' && 'Â£' || '';
+
 
 /*close the bar*/
 var closeBanner = () => {
@@ -100,74 +109,18 @@ const showNotificationBar = (contents) => {
           <div class="notifi__inner">
             <div class="notification__logo"><img src="${openpayLogoPath}/${logo}.png" alt="Openpay"></div>
             <p style="color: ${txtColor}">${message}</p>
-            <a href="javascript:void(0);" onclick="myOpen()">${infoButtonText}</a>
+            <a href="javascript:void(0);" onclick="priceOpen()">${infoButtonText}</a>
             
           </div>
         </div>`
       }
     }
-
-
-    var popupUpHtml = `<div class="openpayPopbox" id="openpayPopbox">
-    <div class="popboxContent">
-      <div class="innerClassPopbox">
-        <a href="javascript:void(0);" class="popboxClose" onclick="myClose();"></a>
-        <div class="popboxDivContent">
-          <a href="javascript:void(0)" class="popboLogo"><img src="${openpayImgPath}/logo-4.png" alt=""></a>
-          <p>Openpay is a simple and flexible way to buy now and pay later - with zero interest. We offer longer, more flexible terms all easily managed through the Openpay App.</p>
-          <div class="popboxMainFeature">
-            <h4>Buy with Openpay in 3 easy steps:</h4>
-            <ul class="op-step-sec">
-              <li>
-                <div class="op-inner">
-                  <div class="op-step">
-                    <div class="op-step-inner">
-                      <span>1</span>
-                    </div>
-                  </div>
-                  <p>Shop &amp; <br>checkout</p>
-                </div>
-              </li>
-              <li>
-                <div class="op-inner">
-                  <div class="op-step">
-                    <div class="op-step-inner">
-                      <span>2</span>
-                    </div>
-                  </div>
-                  <p>Select Openpay from payment options</p>
-                </div>
-              </li>
-              <li>
-                <div class="op-inner">
-                  <div class="op-step">
-                    <div class="op-step-inner">
-                      <span>3</span>
-                    </div>
-                  </div>
-                  <p>Register &amp; design your plan</p>
-                </div>
-              </li>
-            </ul>
-
-            <p>If you are 18 years or older and a permanent resident of Australia all you’ll need is:</p>
-            <ul class="enquery">
-              <li>Photo ID</li>
-              <li>Debit or Credit Card</li>
-              <li>Email</li>
-              <li>The required deposit</li>
-              <li>Mobile phone (+ another contact number)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>`;
     var HTMLmessage = `<div class="notification__message">
       ${messages}
       ${closeButton}
-    </div>
-    ${popupUpHtml}`;
+    </div>`;
+
+    // ${popupUpHtml}`;
     // body.innerHTML = "<div id='notification-bar' class = 'notification__bar'>" + HTMLmessage + "</div>" + body.innerHTML;
     const newDivBody = document.body.firstChild;
     const noti_div = document.createElement('DIV');
@@ -196,12 +149,14 @@ const showNotificationBar = (contents) => {
 const openpayCalculatorAPI = (amount, i) => {
   const data = {
     "token": {
-      "JamAuthToken": ProductListOpenpayInfo.authToken,
+      "JamAuthToken": JamAuthToken,
       "openpay_url_mode": "Training"
     },
     "purchase_price": amount,
     "duration": ProductListOpenpayInfo.payOfMonth + ' Month',
-    "payment_frequency": ProductListOpenpayInfo.frequency
+    "payment_frequency": ProductListOpenpayInfo.frequency,
+    "AuthToken": authToken,
+    "country_code": opCountryCode,
   };
   fetch(`https://${middlewareHost}/api/price-calculator/`, {
     method: 'POST',
@@ -228,35 +183,47 @@ const openpayCalculatorAPI = (amount, i) => {
     } else {
       logoHTML = `<img src="${openpayLogoPath}/${ProductListOpenpayInfo.logo}.png" style="position: relative; margin: 0px 4px;">`;
     }
+    var learnMoreHTML = '';
+    if (ProductListOpenpayInfo.showLearnMore) {
+      learnMoreHTML = `<a onclick = "priceOpen();">Learn more</a>`;
+    }
     if (filteredData) {
       const initialPrice = filteredData[0].initial_payment;
       const paymentAmount = filteredData[0].payment_amount;
       const payments = filteredData[0].no_of_payments;
       const paymentFrequency = filteredData[0].payment_frequency;
       const textFormat = ProductListOpenpayInfo.text;
-      let learnMoreHTML = '';
-      if (ProductListOpenpayInfo.showLearnMore) {
-        learnMoreHTML = `<a onclick = "priceOpen();">Learn More</a>`;
-      }
       // const isFractional = response.fractional_payment;
       // if (isFractional) {
       if (textFormat === 'normal') {
         for (initialAmount of initialAmounts) {
-          initialAmount.innerHTML = `Or ${op_currency}${initialPrice} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
+          if (initialPrice === 0) {
+            initialAmount.innerHTML = `Or ${op_currency}${paymentAmount} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
+          } else {
+            initialAmount.innerHTML = `Or ${op_currency}${initialPrice} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
+          }
         }
       }
       if (textFormat === 'fractional') {
         for (initialAmount of initialAmounts) {
-          initialAmount.innerHTML = `Or ${payments + 1} payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+          if (initialPrice === 0) {
+            initialAmount.innerHTML = `Or ${payments} payments of ${op_currency}${paymentAmount} with ${logoHTML} ${learnMoreHTML}`;
+          } else {
+            initialAmount.innerHTML = `Or ${payments + 1} payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+          }
         }
       }
       if (textFormat === 'fractional_frequency') {
         for (initialAmount of initialAmounts) {
-          initialAmount.innerHTML = `Or ${payments + 1} ${paymentFrequency} interest free payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+          if (initialPrice === 0) {
+            initialAmount.innerHTML = `Or ${payments} ${paymentFrequency} interest free payments of ${op_currency}${paymentAmount} with ${logoHTML} ${learnMoreHTML}`;
+          } else {
+            initialAmount.innerHTML = `Or ${payments + 1} ${paymentFrequency} interest free payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+          }
         }
       }
       if (textFormat === 'noprice') {
-        for (initialAmount of initialAmounts) {
+        for (let initialAmount of initialAmounts) {
           initialAmount.innerHTML = `Or more time to pay with ${logoHTML} ${learnMoreHTML}`;
         }
       }
@@ -280,7 +247,7 @@ const openpayCalculatorAPI = (amount, i) => {
       //   }
       // }
     } else {
-      for (initialAmount of initialAmounts) {
+      for (let initialAmount of initialAmounts) {
         initialAmount.innerHTML = `Or more time to pay with ${logoHTML} ${learnMoreHTML}`;
       }
     }
@@ -289,7 +256,7 @@ const openpayCalculatorAPI = (amount, i) => {
   });
 }
 
-const addLogoToList = (min, max) => {
+const activateProductWidget = (min, max) => {
   const infoDivExists = document.querySelectorAll('.top-info');
   removeElements(infoDivExists)
   var prices = document.querySelectorAll(productListClasses.productParentPrice);
@@ -305,61 +272,6 @@ const addLogoToList = (min, max) => {
     const widgitHTML = `<div class="info-ttl">
                           <span class="" id="todayAmt${i}"></span>
                         </div>`;
-    var bannerImage = 'slider';
-    var popUpOpenpayLogo = 'op_logo_normal';
-    var popUpMerchantLogo = '';
-    var tagLineColor = '#000000';
-    if (popupSettingsExists) {
-      bannerImage = LearnMorePopUpSettings.bannerImage || 'slider';
-      popUpOpenpayLogo = LearnMorePopUpSettings.openpayLogo || 'op_logo_normal';
-      popUpMerchantLogo = LearnMorePopUpSettings.merchantLogo || '';
-      tagLineColor = LearnMorePopUpSettings.taglineColor || '#000000';
-    }
-    const popupHTML = document.createElement('DIV');
-    popupHTML.innerHTML = `
-    <div class="pricepopbox" id="pricepopbox">
-      <div class="popboxPriceContent">
-        <div class="innerPricePopbox">
-          <a href="javascript:void(0);" class="popboxClose" onclick="priceClose()"></a>
-          <div class="popboxPriceInner">
-            <div class="popUpperpart" style="background-image: url('${openpayImgPath}/${bannerImage}.jpg');">
-              <div class="allLogos">
-                <span><img src="${popUpMerchantLogo}"></span>
-                <span><img src="${openpayLogoPath}/${popUpOpenpayLogo}.png"></span>
-              </div>
-              <h6 style="color: ${tagLineColor};">Buy now. Pay smarter</h6>
-            </div>
-            <div class="popLowerpart">
-              <h4>Available on orders from ${op_currency}${min} - ${op_currency}${max}</h4>
-              <ul>
-                <li>
-                  <span></span>
-                  <p>Shop & <br>checkout</p>
-                </li>
-                <li>
-                  <span></span>
-                  <p>Select Openpay as <br>your payment method</p>
-                </li>
-                <li>
-                  <span></span>
-                  <p>Register & design <br>your plan</p>
-                </li>
-              </ul>
-            </div>
-            <div class="popLastPart">
-              <p>If you are 18 years or older and a permanent resident of Australia all you’ll need is a </p>
-              <div class="innerElements">
-                <span>Debit or Credit card</span>
-                <span>Email address</span>
-                <span>The required deposit</span>
-                <span>Mobile phone</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`
-    document.body.appendChild(popupHTML);
     let amounts = price.innerText;
     amounts = amounts.replace(/\n/g, " ").split(" ");
     amounts = amounts.map(amount => Number(amount.replace(/[^0-9.-]+/g, "")));
@@ -371,6 +283,7 @@ const addLogoToList = (min, max) => {
     topInfoDiv.classList.add('top-info');
     topInfoDiv.innerHTML = widgitHTML;
     topInfoDiv.style.color = ProductListOpenpayInfo.styles.color || '#000000';
+    topInfoDiv.querySelector('.info-ttl > span').style.textAlign = ProductListOpenpayInfo.styles.textAlign;
     topInfoDiv.style.backgroundColor = ProductListOpenpayInfo.styles.backgroundColor || '#ffffff';
     topInfoDiv.style.fontStyle = ProductListOpenpayInfo.styles.fontStyle;
     topInfoDiv.style.fontSize = ProductListOpenpayInfo.styles.fontSize;
@@ -383,6 +296,11 @@ const addLogoToList = (min, max) => {
     if (amounts[0] >= min && amounts[0] <= max) {
       price.after(topInfoDiv);
       openpayCalculatorAPI(amounts[0], i);
+    } else {
+      if (ProductListOpenpayInfo.showOpenpayMsg) {
+        price.after(topInfoDiv);
+        topInfoDiv.innerHTML = `Openpay available on orders from ${op_currency}${min} - ${op_currency}${max}`;
+      }
     }
 
   }
@@ -399,12 +317,14 @@ const addCheckoutWidget = (min, max) => {
     if (orderTotal >= min && orderTotal <= max) {
       const checkoutPayload = {
         "token": {
-          "JamAuthToken": checkoutSettings.authToken,
+          "JamAuthToken": authToken,
           "openpay_url_mode": "Training"
         },
         "purchase_price": orderTotal,
         "duration": checkoutSettings.payOfMonth,
-        "payment_frequency": checkoutSettings.frequency
+        "payment_frequency": checkoutSettings.frequency,
+        "AuthToken": authToken,
+        "country_code": opCountryCode,
       }
       fetch(`https://${middlewareHost}/api/checkout/`, {
         method: 'POST',
@@ -455,47 +375,62 @@ const addCheckoutWidget = (min, max) => {
             <div class="checkout_payment_op"></div>
           </div>
         `;
-        if (payments.length > 0) {
-          opPaymentBox.innerHTML = checkoutHtml;
+        if (payments) {
+          if (payments.length > 0) {
+            opPaymentBox.innerHTML = checkoutHtml;
+          } else {
+            opPaymentBox.innerHTML = noOptionHtml;
+          }
         } else {
           opPaymentBox.innerHTML = noOptionHtml;
         }
         var paymentsHtml = '';
-        if (payments.length > 0) {
-          if (isFractionalPayment) {
-            for (let payment of payments) {
-              paymentsHtml += `
+        if (payments) {
+
+          if (payments.length > 0) {
+            if (isFractionalPayment) {
+              for (let payment of payments) {
+                paymentsHtml += `
               <div class="price__Tag__Checkout">
                 <span>${payment.no_of_payments + 1}</span>
                 <div class="priceTagText">
-                  <p>${payment.payment_frequency} payments of</p>
+                  <p>${op_countryCode === 'AU' && payment.payment_frequency || ''} payments of</p>
                 </div>
                 <b>${op_currency}${payment.payment_amount}</b>
               </div>
               <p class="orcheckout__ptag">OR</p>
           `;
-            }
-          } else {
-            paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment}</span><p>Today’s Payment and</p></h2>`
-            for (let payment of payments) {
-              paymentsHtml += `
+              }
+            } else {
+              if (payments[0].initial_payment > 0) {
+                paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment}</span><p>Todayâ€™s Payment and</p></h2>`
+              }
+              for (let payment of payments) {
+                paymentsHtml += `
               <div class="price__Tag__Checkout">
                 <span>${payment.no_of_payments}</span>
                 <div class="priceTagText">
-                  <p>${payment.payment_frequency} payments of</p>
+                  <p>${op_countryCode === 'AU' && payment.payment_frequency || ''} payments of</p>
                 </div>
                 <b>${op_currency}${payment.payment_amount}</b>
               </div>
               <p class="orcheckout__ptag">OR</p>
           `;
+              }
             }
-          }
-        } else {
-          paymentsHtml += `
+          } else {
+            paymentsHtml += `
             <div class="price__Tag__Checkout">
               No Options Available for Given Configurations.
             </div>
         `;
+          }
+        } else {
+          paymentsHtml += `
+          <div class="price__Tag__Checkout">
+            No Options Available for Given Configurations.
+          </div>
+      `;
         }
         const checkoutPaymentSection = document.querySelector('.checkout_payment_op');
         checkoutPaymentSection.innerHTML = '';
@@ -507,7 +442,7 @@ const addCheckoutWidget = (min, max) => {
         } else if (logo === 'op_text_black') {
           logoHTML = `<div style="display: inline-block; margin-left: 30px; margin-top: 6px; color:#000000;">Openpay</div>`
         } else {
-          logoHTML = `<img src="${openpayLogoPath}/${checkoutSettings.logo}.png" alt="Openpay" style="display: inline-block; margin-left: 90px; margin-top: 6px;">`;
+          logoHTML = `<img src="${openpayLogoPath}/${checkoutSettings.logo}.png" alt="Openpay" style="display: inline-block; margin-left: 60px; margin-top: 6px;">`;
         }
 
         const op_label = document.querySelectorAll('label');
@@ -580,9 +515,10 @@ const getMinMax = (modules) => {
   }).then((data) => {
     const minPrice = data.MinPrice;
     const maxPrice = data.MaxPrice;
+    addPopupBox(minPrice, maxPrice);
     if (modules === 'all') {
       if (activateProductList) {
-        addLogoToList(minPrice, maxPrice);
+        activateProductWidget(minPrice, maxPrice);
       }
       if (checkoutSettingsExists) {
         addCheckoutWidget(minPrice, maxPrice);
@@ -600,7 +536,7 @@ const getMinMax = (modules) => {
       }
     } else if (modules === 'productlist') {
       if (activateProductList) {
-        addLogoToList(minPrice, maxPrice);
+        activateProductWidget(minPrice, maxPrice);
       }
     }
   }).catch((error) => {
@@ -626,7 +562,9 @@ const checkAuthentication = (modules) => {
       throw new Error("Could not reach the API: " + response.statusText);
     }
   }).then((data) => {
-    showNotificationBar(notificationBar);
+    if (activateNotificationSlider) {
+      showNotificationBar(notificationBar);
+    }
     getMinMax(modules);
   }).catch((error) => {
     console.log(error);
@@ -690,6 +628,64 @@ if (checkoutSettingsExists) {
 
 if (activateProductList) {
   productVariationsCheck();
+}
+
+const addPopupBox = (min, max) => {
+  var bannerImage = 'slider';
+  var popUpOpenpayLogo = 'op_logo_normal';
+  var popUpMerchantLogo = '';
+  var tagLineColor = '#000000';
+  if (popupSettingsExists) {
+    bannerImage = LearnMorePopUpSettings.bannerImage || 'slider';
+    popUpOpenpayLogo = LearnMorePopUpSettings.openpayLogo || 'op_logo_normal';
+    popUpMerchantLogo = LearnMorePopUpSettings.merchantLogo || '';
+    tagLineColor = LearnMorePopUpSettings.taglineColor || '#000000';
+  }
+  const popupHTML = document.createElement('DIV');
+  popupHTML.innerHTML = `
+    <div class="pricepopbox" id="pricepopbox">
+      <div class="popboxPriceContent">
+        <div class="innerPricePopbox">
+          <a href="javascript:void(0);" class="popboxClose" onclick="priceClose()"></a>
+          <div class="popboxPriceInner">
+            <div class="popUpperpart" style="background-image: url('${openpayImgPath}/${bannerImage}.jpg');">
+              <div class="allLogos">
+                <span><img src="${popUpMerchantLogo}"></span>
+                <span><img src="${openpayLogoPath}/${popUpOpenpayLogo}.png"></span>
+              </div>
+              <h6 style="color: ${tagLineColor};">Buy now. Pay smarter</h6>
+            </div>
+            <div class="popLowerpart">
+              <h4>Available on orders from ${op_currency}${min} - ${op_currency}${max}</h4>
+              <ul>
+                <li>
+                  <span></span>
+                  <p>Shop & <br>checkout</p>
+                </li>
+                <li>
+                  <span></span>
+                  <p>Select Openpay as <br>your payment method</p>
+                </li>
+                <li>
+                  <span></span>
+                  <p>Register & design <br>your plan</p>
+                </li>
+              </ul>
+            </div>
+            <div class="popLastPart">
+              <p>If you are 18 years or older and a permanent resident of ${country_name} all youâ€™ll need is a </p>
+              <div class="innerElements">
+                <span>Debit or Credit card</span>
+                <span>Email address</span>
+                <span>The required deposit</span>
+                <span>Mobile phone</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`
+  document.body.appendChild(popupHTML);
 }
 
 const checkMultipleInfo = () => {
