@@ -3,7 +3,7 @@ var authPayload = { "token": { JamAuthToken, "openpay_url_mode": "Training" } };
 var openpayImgPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img';
 var openpayLogoPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img/op-logos';
 
-// const opCurrencySymbols = ['$', 'Â£', 'â‚¹', 'â‚¬'];
+// const opCurrencySymbols = ['$', '£', '₹', '€'];
 
 // let opPriceCurrency = document.querySelectorAll(productListClasses.productParentPrice);
 // if (!opPriceCurrency.length) {
@@ -32,7 +32,7 @@ const op_countryCode = typeof (opCountryCode) !== 'undefined' && opCountryCode |
 
 const country_name = op_countryCode === 'AU' && 'Australia' || op_countryCode === 'UK' && 'United Kingdom' || '';
 
-const op_currency = op_countryCode === 'AU' && '$' || op_countryCode === 'UK' && 'Â£' || '';
+const op_currency = op_countryCode === 'AU' && '$' || op_countryCode === 'UK' && '£' || '';
 
 
 /*close the bar*/
@@ -123,6 +123,8 @@ const showNotificationBar = (contents) => {
     // ${popupUpHtml}`;
     // body.innerHTML = "<div id='notification-bar' class = 'notification__bar'>" + HTMLmessage + "</div>" + body.innerHTML;
     const newDivBody = document.body.firstChild;
+    newDivBody.style.float = 'left';
+    newDivBody.style.width = '100%';
     const noti_div = document.createElement('DIV');
     noti_div.className = "op-notificationOuterDiv";
     noti_div.innerHTML = "<div id='notification-bar' class = 'notification__bar'>" + HTMLmessage + "</div>";
@@ -403,7 +405,7 @@ const addCheckoutWidget = (min, max) => {
               }
             } else {
               if (payments[0].initial_payment > 0) {
-                paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment}</span><p>Todayâ€™s Payment and</p></h2>`
+                paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment}</span><p>Today’s Payment and</p></h2>`
               }
               for (let payment of payments) {
                 paymentsHtml += `
@@ -673,7 +675,7 @@ const addPopupBox = (min, max) => {
               </ul>
             </div>
             <div class="popLastPart">
-              <p>If you are 18 years or older and a permanent resident of ${country_name} all youâ€™ll need is a </p>
+              <p>If you are 18 years or older and a permanent resident of ${country_name} all you’ll need is a </p>
               <div class="innerElements">
                 <span>Debit or Credit card</span>
                 <span>Email address</span>
