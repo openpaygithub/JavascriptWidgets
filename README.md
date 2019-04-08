@@ -78,10 +78,9 @@ var notificationBar = {
 {
     logo: 'op_logo_normal',
     logo: 'op_logo_grey',
-    logo: 'op_logo_icon_normal',
-    logo: 'op_logo_icon_grey',
-    logo: 'op_logo_normal_large',
-    logo: 'op_logo_grey_large',
+    logo: 'op_logo_black',
+    logo: 'op_logo_white',
+    logo: 'op_logo_darkgrey',
     logo: 'op_text_black',
     logo: 'op_text_blue'
 }
@@ -149,7 +148,7 @@ var miniCartClasses = {
 
 ```javascript
 var miniCartSettings = {
-    logo: 'op_logo_icon_normal'                         // change mini-cart logo pattern
+    logo: 'op_logo_normal'                         // change mini-cart logo pattern
 }
 ```
 
