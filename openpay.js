@@ -1,61 +1,27 @@
 var middlewareHost = 'pysdk.openpaysdk.com';
-var authPayload = { "token": { JamAuthToken, "openpay_url_mode": "Training" } };
+var authPayload = { 
+  "token": { "JamAuthToken": JamAuthToken },
+  "country_code": opCountryCode,
+  "openpay_url_mode": payUrlMode
+};
 var openpayImgPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img';
 var openpayLogoPath = 'https://www.jssdk.openpaytestandtrain.com.au/cdn/img/op-logos';
 
-// const opCurrencySymbols = ['$', '£', '₹', '€'];
-
-// let opPriceCurrency = document.querySelectorAll(productListClasses.productParentPrice);
-// if (!opPriceCurrency.length) {
-//   opPriceCurrency = document.querySelectorAll(productListClasses.productAlternatePrice);
-// }
-// var op_currency = '';
-// for (let opCurrencySymbol of opCurrencySymbols) {
-//   if (opPriceCurrency[0].innerText.includes(opCurrencySymbol)) {
-//     op_currency = opCurrencySymbol;
-//   };
-// }
-
 const activateNotificationSlider = typeof (notificationBar) !== 'undefined' && true || false;
-
 const activateMiniCart = typeof (miniCartClasses) !== 'undefined' && true || false;
-
 const checkoutSettingsExists = typeof (checkoutSettings) !== 'undefined' && true || false;
-
 const activateProductList = typeof (productListClasses) !== 'undefined' && true || false;
-
 const popupSettingsExists = typeof (LearnMorePopUpSettings) !== 'undefined' && true || false;
-
-// const op_currency = typeof (opCurrency) !== 'undefined' && opCurrency || '';
-
 const op_countryCode = typeof (opCountryCode) !== 'undefined' && opCountryCode || '';
+const country_name = op_countryCode === 'AU' && 'Australia' || op_countryCode === 'UK' && 'United Kingdom <br>' || '';
+const taglines = op_countryCode === 'AU' && 'Buy now. Pay smarter.' || op_countryCode === 'UK' && 'A smarter way to pay.' || '';
+const op_currency = op_countryCode === 'AU' && '$' || op_countryCode === 'UK' && 'Â£' || '';
 
-const country_name = op_countryCode === 'AU' && 'Australia' || op_countryCode === 'UK' && 'United Kingdom' || '';
-
-const op_currency = op_countryCode === 'AU' && '$' || op_countryCode === 'UK' && '£' || '';
-
-
-/*close the bar*/
-var closeBanner = () => {
-  document.getElementById('notification-bar').style.display = 'none';
-}
-
-var myOpen = () => {
-  document.getElementById("openpayPopbox").style.display = "block";
-}
-
-var myClose = () => {
-  document.getElementById("openpayPopbox").style.display = "none";
-}
-
-var priceOpen = () => {
-  document.getElementById("pricepopbox").style.display = "block";
-}
-
-var priceClose = () => {
-  document.getElementById("pricepopbox").style.display = "none";
-}
-
+var closeBanner = () => { document.getElementById('notification-bar').style.display = 'none'; }
+var myOpen = () => { document.getElementById("openpayPopbox").style.display = "block"; }
+var myClose = () => { document.getElementById("openpayPopbox").style.display = "none"; }
+var priceOpen = () => { document.getElementById("pricepopbox").style.display = "block"; }
+var priceClose = () => { document.getElementById("pricepopbox").style.display = "none"; }
 const removeElements = (elms) => [...elms].forEach(el => el.remove());
 
 const showNotificationBar = (contents) => {
@@ -67,7 +33,6 @@ const showNotificationBar = (contents) => {
   closeButtonTextColor = typeof closeButtonTextColor !== 'undefined' ? closeButtonTextColor : '#000000';
   const notification = document.getElementById('notification-bar');
   if (!notification) {
-    // let body = document.getElementsByTagName("BODY")[0];
     var closeButton = `<a id ='close' onclick='closeBanner();' href='javascript:void(0)' class='notification__close' style='float: right;background-color: ${closeButtonBackground}; color: ${closeButtonTextColor};' >${closeButtonText}</a>`;
     var messages = '';
     for (content of contents.messages) {
@@ -90,7 +55,6 @@ const showNotificationBar = (contents) => {
             <div class="notification__logo" style="color:#2864ff !important;">Openpay</div>
             <p style="color: ${txtColor}">${message}</p>
             <a href="javascript:void(0);" onclick="myOpen()">${infoButtonText}</a>
-            
           </div>
         </div>`
       } else if (logo === 'op_text_black') {
@@ -100,17 +64,15 @@ const showNotificationBar = (contents) => {
           <div class="notification__logo" style="color:#000000 !important;">Openpay</div>
             <p style="color: ${txtColor}">${message}</p>
             <a href="javascript:void(0);" onclick="myOpen()">${infoButtonText}</a>
-            
           </div>
         </div>`
       } else {
         messages += ` 
         <div class="notification__cover opSlides op-animate-top" style="background-color: ${bgColor}; height: 400">
           <div class="notifi__inner">
-            <div class="notification__logo"><img src="${openpayLogoPath}/${logo}.png" alt="Openpay"></div>
+            <div class="notification__logo"><img src="${openpayLogoPath}/${logo}.svg" alt="Openpay"></div>
             <p style="color: ${txtColor}">${message}</p>
             <a href="javascript:void(0);" onclick="priceOpen()">${infoButtonText}</a>
-            
           </div>
         </div>`
       }
@@ -119,17 +81,11 @@ const showNotificationBar = (contents) => {
       ${messages}
       ${closeButton}
     </div>`;
-
-    // ${popupUpHtml}`;
-    // body.innerHTML = "<div id='notification-bar' class = 'notification__bar'>" + HTMLmessage + "</div>" + body.innerHTML;
     const newDivBody = document.body.firstChild;
-    newDivBody.style.float = 'left';
-    newDivBody.style.width = '100%';
     const noti_div = document.createElement('DIV');
     noti_div.className = "op-notificationOuterDiv";
     noti_div.innerHTML = "<div id='notification-bar' class = 'notification__bar'>" + HTMLmessage + "</div>";
     document.body.insertBefore(noti_div, newDivBody);
-
     var myIndex = 0;
     function notificationSlider() {
       var i;
@@ -150,21 +106,16 @@ const showNotificationBar = (contents) => {
 
 const openpayCalculatorAPI = (amount, i) => {
   const data = {
-    "token": {
-      "JamAuthToken": JamAuthToken,
-      "openpay_url_mode": "Training"
-    },
+    "token": { "JamAuthToken": JamAuthToken, },
+    "openpay_url_mode": payUrlMode,
     "purchase_price": amount,
     "duration": ProductListOpenpayInfo.payOfMonth + ' Month',
     "payment_frequency": ProductListOpenpayInfo.frequency,
-    "AuthToken": authToken,
     "country_code": opCountryCode,
   };
   fetch(`https://${middlewareHost}/api/price-calculator/`, {
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
+    headers: { 'Content-type': 'application/json' },
     mode: 'cors',
     body: JSON.stringify(data)
   }).then((response) => {
@@ -183,44 +134,40 @@ const openpayCalculatorAPI = (amount, i) => {
     } else if (logo === 'op_text_black') {
       logoHTML = `<div style="position: relative; margin: 0px 4px;color:#000000;">Openpay</div>`
     } else {
-      logoHTML = `<img src="${openpayLogoPath}/${ProductListOpenpayInfo.logo}.png" style="position: relative; margin: 0px 4px;">`;
+      logoHTML = `<img src="${openpayLogoPath}/${ProductListOpenpayInfo.logo}.svg" style="position: relative; margin: 0px 4px;">`;
     }
     var learnMoreHTML = '';
-    if (ProductListOpenpayInfo.showLearnMore) {
-      learnMoreHTML = `<a onclick = "priceOpen();">Learn more</a>`;
-    }
+    if (ProductListOpenpayInfo.showLearnMore) { learnMoreHTML = `<a onclick = "priceOpen();">Learn more</a>`; }
     if (filteredData) {
       const initialPrice = filteredData[0].initial_payment;
       const paymentAmount = filteredData[0].payment_amount;
       const payments = filteredData[0].no_of_payments;
       const paymentFrequency = filteredData[0].payment_frequency;
       const textFormat = ProductListOpenpayInfo.text;
-      // const isFractional = response.fractional_payment;
-      // if (isFractional) {
       if (textFormat === 'normal') {
         for (initialAmount of initialAmounts) {
           if (initialPrice === 0) {
-            initialAmount.innerHTML = `Or ${op_currency}${paymentAmount} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${op_currency}${paymentAmount.toFixed(2)} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
           } else {
-            initialAmount.innerHTML = `Or ${op_currency}${initialPrice} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${op_currency}${initialPrice.toFixed(2)} today and more time to pay with ${logoHTML} ${learnMoreHTML}`;
           }
         }
       }
       if (textFormat === 'fractional') {
         for (initialAmount of initialAmounts) {
           if (initialPrice === 0) {
-            initialAmount.innerHTML = `Or ${payments} payments of ${op_currency}${paymentAmount} with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${payments} payments of ${op_currency}${paymentAmount.toFixed(2)} with ${logoHTML} ${learnMoreHTML}`;
           } else {
-            initialAmount.innerHTML = `Or ${payments + 1} payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${payments + 1} payments of ${op_currency}${initialPrice.toFixed(2)} with ${logoHTML} ${learnMoreHTML}`;
           }
         }
       }
       if (textFormat === 'fractional_frequency') {
         for (initialAmount of initialAmounts) {
           if (initialPrice === 0) {
-            initialAmount.innerHTML = `Or ${payments} ${paymentFrequency} interest free payments of ${op_currency}${paymentAmount} with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${payments} ${paymentFrequency} interest free payments of ${op_currency}${paymentAmount.toFixed(2)} with ${logoHTML} ${learnMoreHTML}`;
           } else {
-            initialAmount.innerHTML = `Or ${payments + 1} ${paymentFrequency} interest free payments of ${op_currency}${initialPrice} with ${logoHTML} ${learnMoreHTML}`;
+            initialAmount.innerHTML = `Or ${payments + 1} ${paymentFrequency} interest free payments of ${op_currency}${initialPrice.toFixed(2)} with ${logoHTML} ${learnMoreHTML}`;
           }
         }
       }
@@ -229,25 +176,6 @@ const openpayCalculatorAPI = (amount, i) => {
           initialAmount.innerHTML = `Or more time to pay with ${logoHTML} ${learnMoreHTML}`;
         }
       }
-      // }
-      // else {
-      //   if (textFormat === 'format1') {
-      //     for (initialAmount of initialAmounts) {
-      //       initialAmount.innerText = `Or $${initialPrice} today and more time to pay with `;
-      //     }
-      //   }
-      //   if (textFormat === 'format2') {
-      //     for (initialAmount of initialAmounts) {
-      //       // initialAmount.innerText = `Or $${initialPrice} today and rest with ${payments + 1} payments of $${paymentAmount} with `;
-      //       initialAmount.innerText = `Or ${payments + 1} payments of $${initialPrice} with `;
-      //     }
-      //   }
-      //   if (textFormat === 'format3') {
-      //     for (initialAmount of initialAmounts) {
-      //       initialAmount.innerText = `Or more time to pay with `;
-      //     }
-      //   }
-      // }
     } else {
       for (let initialAmount of initialAmounts) {
         initialAmount.innerHTML = `Or more time to pay with ${logoHTML} ${learnMoreHTML}`;
@@ -262,15 +190,10 @@ const activateProductWidget = (min, max) => {
   const infoDivExists = document.querySelectorAll('.top-info');
   removeElements(infoDivExists)
   var prices = document.querySelectorAll(productListClasses.productParentPrice);
-  // var prices = document.querySelectorAll('.woocommerce-variation-price .price');
   if (!prices.length) {
     prices = document.querySelectorAll(productListClasses.productAlternatePrice);
   }
   for ([i, price] of prices.entries()) {
-    // let learnMoreHTML = '';
-    // if (ProductListOpenpayInfo.showLearnMore) {
-    //   learnMoreHTML = `<a onclick = "priceOpen();">Learn More</a>`;
-    // }
     const widgitHTML = `<div class="info-ttl">
                           <span class="" id="todayAmt${i}"></span>
                         </div>`;
@@ -304,11 +227,7 @@ const activateProductWidget = (min, max) => {
         topInfoDiv.innerHTML = `Openpay available on orders from ${op_currency}${min} - ${op_currency}${max}`;
       }
     }
-
   }
-
-
-
 };
 
 const addCheckoutWidget = (min, max) => {
@@ -318,21 +237,16 @@ const addCheckoutWidget = (min, max) => {
     orderTotal = Number(orderTotal.innerText.replace(/[^0-9.-]+/g, ""));
     if (orderTotal >= min && orderTotal <= max) {
       const checkoutPayload = {
-        "token": {
-          "JamAuthToken": authToken,
-          "openpay_url_mode": "Training"
-        },
+        "token": { "JamAuthToken": JamAuthToken, },
+        "openpay_url_mode": payUrlMode,
         "purchase_price": orderTotal,
         "duration": checkoutSettings.payOfMonth,
         "payment_frequency": checkoutSettings.frequency,
-        "AuthToken": authToken,
         "country_code": opCountryCode,
       }
       fetch(`https://${middlewareHost}/api/checkout/`, {
         method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
+        headers: { 'Content-type': 'application/json' },
         mode: 'cors',
         body: JSON.stringify(checkoutPayload)
       }).then((response) => {
@@ -343,15 +257,14 @@ const addCheckoutWidget = (min, max) => {
         }
       }).then((response) => {
         const payments = response.data;
-        // const openpayCheckoutLabel = document.querySelector(checkoutClasses.paymentLabel);
         const isFractionalPayment = response.fractional_payment;
         let opCheckoutMessageFormat = 'op_checkout_text';
-        let opCheckoutMessage = '<p class="Checkout__ptag" style="margin-bottom: 0px;">Click on <a href="javascript:void(0);">Submit Order</a> to securely <br>complete your purchase. <br>You will be directed to Openpay website.</p>';
+        let opCheckoutMessage = '<p class="Checkout__ptag" style="margin-bottom: 0px;">Click on <a href="javascript:void(0);">Submit Order</a> to securely <br>complete your purchase. <br>You will be directed to the Openpay website.</p>';
         if (checkoutSettingsExists) {
           opCheckoutMessageFormat = checkoutSettings.checkoutMessageFormat || 'op_checkout_text';
         }
         if (opCheckoutMessageFormat === 'op_checkout_text') {
-          opCheckoutMessage = '<p class="Checkout__ptag" style="margin-bottom: 0px;">Click on <a href="javascript:void(0);">Submit Order</a> to securely <br>complete your purchase. <br>You will be directed to Openpay website.</p>';
+          opCheckoutMessage = '<p class="Checkout__ptag" style="margin-bottom: 0px;">Click on <a href="javascript:void(0);">Submit Order</a> to securely <br>complete your purchase. <br>You will be directed to the Openpay website.</p>';
         }
         if (opCheckoutMessageFormat === 'op_checkout_text_button') {
           opCheckoutMessage = '<p class="Checkout__ptag" style="margin-bottom: 0px;">Click on <a href="javascript:void(0);">Submit Order</a> to securely <br>complete your purchase. <br><a href="javascript:void(0);" class="op__checkoutbtn">Proceed to Openpay</a>';
@@ -359,7 +272,6 @@ const addCheckoutWidget = (min, max) => {
         if (opCheckoutMessageFormat === 'op_checkout_button') {
           opCheckoutMessage = '<a href="javascript:void(0);" class="op__checkoutbtn">Proceed to Openpay</a>';
         }
-        // const opPaymentSection = document.querySelector(checkoutClasses.paymentMethod);
         let opPaymentBox = document.querySelector(checkoutClasses.paymentMethodBox);
         if (!opPaymentBox) {
           opPaymentBox = document.querySelector(checkoutClasses.paymentMethodBox);
@@ -388,7 +300,6 @@ const addCheckoutWidget = (min, max) => {
         }
         var paymentsHtml = '';
         if (payments) {
-
           if (payments.length > 0) {
             if (isFractionalPayment) {
               for (let payment of payments) {
@@ -398,14 +309,13 @@ const addCheckoutWidget = (min, max) => {
                 <div class="priceTagText">
                   <p>${op_countryCode === 'AU' && payment.payment_frequency || ''} payments of</p>
                 </div>
-                <b>${op_currency}${payment.payment_amount}</b>
+                <b>${op_currency}${payment.payment_amount.toFixed(2)}</b>
               </div>
-              <p class="orcheckout__ptag">OR</p>
-          `;
+              <p class="orcheckout__ptag">OR</p>`;
               }
             } else {
               if (payments[0].initial_payment > 0) {
-                paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment}</span><p>Today’s Payment and</p></h2>`
+                paymentsHtml += `<h2 style="text-align:center; padding-bottom: 15px;"><span>${op_currency}${payments[0].initial_payment.toFixed(2)}</span><p>Todayâ€™s Payment and</p></h2>`
               }
               for (let payment of payments) {
                 paymentsHtml += `
@@ -414,25 +324,22 @@ const addCheckoutWidget = (min, max) => {
                 <div class="priceTagText">
                   <p>${op_countryCode === 'AU' && payment.payment_frequency || ''} payments of</p>
                 </div>
-                <b>${op_currency}${payment.payment_amount}</b>
+                <b>${op_currency}${payment.payment_amount.toFixed(2)}</b>
               </div>
-              <p class="orcheckout__ptag">OR</p>
-          `;
+              <p class="orcheckout__ptag">OR</p>`;
               }
             }
           } else {
             paymentsHtml += `
             <div class="price__Tag__Checkout">
               No Options Available for Given Configurations.
-            </div>
-        `;
+            </div>`;
           }
         } else {
           paymentsHtml += `
           <div class="price__Tag__Checkout">
             No Options Available for Given Configurations.
-          </div>
-      `;
+          </div>`;
         }
         const checkoutPaymentSection = document.querySelector('.checkout_payment_op');
         checkoutPaymentSection.innerHTML = '';
@@ -444,15 +351,14 @@ const addCheckoutWidget = (min, max) => {
         } else if (logo === 'op_text_black') {
           logoHTML = `<div style="display: inline-block; margin-left: 30px; margin-top: 6px; color:#000000;">Openpay</div>`
         } else {
-          logoHTML = `<img src="${openpayLogoPath}/${checkoutSettings.logo}.png" alt="Openpay" style="display: inline-block; margin-left: 60px; margin-top: 6px;">`;
+          logoHTML = `<img src="${openpayLogoPath}/${checkoutSettings.logo}.svg" alt="Openpay" style="display: inline-block; margin-left: 60px; margin-top: 6px; width: 100px;">`;
         }
-
         const op_label = document.querySelectorAll('label');
         for (let openpayCheckoutLabel of op_label) {
           if (openpayCheckoutLabel.htmlFor === checkoutClasses.paymentLabel) {
             openpayCheckoutLabel.style.display = 'inline';
             openpayCheckoutLabel.innerText = 'loading...';
-            openpayCheckoutLabel.innerHTML = `Openpay - Buy Now. Pay Later. ${logoHTML}`;
+            openpayCheckoutLabel.innerHTML = `Openpay - A smarter way to pay. ${logoHTML}`;
           }
         }
       }).catch((error) => {
@@ -471,7 +377,7 @@ const miniCartWidget = (min, max) => {
   } else if (logo === 'op_text_black') {
     logoHTML = `<div style="color:#000000;">Openpay</div>`
   } else {
-    logoHTML = `<img src="${openpayLogoPath}/${miniCartSettings.logo}.png"/>`;
+    logoHTML = `<img src="${openpayLogoPath}/${miniCartSettings.logo}.svg"/>`;
   }
   const cartWidgetExists = document.querySelectorAll('.op-cart-info');
   removeElements(cartWidgetExists)
@@ -481,7 +387,7 @@ const miniCartWidget = (min, max) => {
     if (cart_value !== 0) {
       if (cart_value < min) {
         let add_value = min - cart_value;
-        const cartHtml = `${logoHTML}<p>Spend an additional ${op_currency}${add_value} and use Openpay to pay over time interest free.</p>`;
+        const cartHtml = `${logoHTML}<p>Spend an additional ${op_currency}${add_value.toFixed(2)} and use Openpay to pay over time interest free.</p>`;
         let divNode = document.createElement('DIV');
         let hrNode = document.createElement('HR');
         divNode.className = 'op-cart-info';
@@ -489,7 +395,7 @@ const miniCartWidget = (min, max) => {
         cartContent.appendChild(divNode)
       } else if (cart_value > max) {
         let reduce_value = cart_value - max;
-        const cartHtml = ``; //${logoHTML}<p>Openpay is not available as your cart size is over the maximum limit of ${max}. Please reduce your cart size by ${reduce_value} to use Openpay.</p>
+        const cartHtml = ``;
         let divNode = document.createElement('DIV');
         let hrNode = document.createElement('HR');
         divNode.className = 'op-cart-info';
@@ -503,9 +409,7 @@ const miniCartWidget = (min, max) => {
 const getMinMax = (modules) => {
   fetch(`https://${middlewareHost}/api/min-max-check/`, {
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
+    headers: { 'Content-type': 'application/json' },
     mode: 'cors',
     body: JSON.stringify(authPayload)
   }).then((response) => {
@@ -519,42 +423,25 @@ const getMinMax = (modules) => {
     const maxPrice = data.MaxPrice;
     addPopupBox(minPrice, maxPrice);
     if (modules === 'all') {
-      if (activateProductList) {
-        activateProductWidget(minPrice, maxPrice);
-      }
-      if (checkoutSettingsExists) {
-        addCheckoutWidget(minPrice, maxPrice);
-      }
-      if (activateMiniCart) {
-        miniCartWidget(minPrice, maxPrice);
-      }
+      if (activateProductList) { activateProductWidget(minPrice, maxPrice); }
+      if (checkoutSettingsExists) { addCheckoutWidget(minPrice, maxPrice); }
+      if (activateMiniCart) { miniCartWidget(minPrice, maxPrice); }
     } else if (modules === 'miniCart') {
-      if (activateMiniCart) {
-        miniCartWidget(minPrice, maxPrice);
-      }
+      if (activateMiniCart) { miniCartWidget(minPrice, maxPrice); }
     } else if (modules === 'checkout') {
-      if (checkoutSettingsExists) {
-        addCheckoutWidget(minPrice, maxPrice);
-      }
+      if (checkoutSettingsExists) { addCheckoutWidget(minPrice, maxPrice); }
     } else if (modules === 'productlist') {
-      if (activateProductList) {
-        activateProductWidget(minPrice, maxPrice);
-      }
+      if (activateProductList) { activateProductWidget(minPrice, maxPrice); }
     }
   }).catch((error) => {
     console.log(error);
   });
 }
 
-
-
-
 const checkAuthentication = (modules) => {
   fetch(`https://${middlewareHost}/api/auth/`, {
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
+    headers: { 'Content-type': 'application/json' },
     mode: 'cors',
     body: JSON.stringify(authPayload)
   }).then((response) => {
@@ -564,16 +451,12 @@ const checkAuthentication = (modules) => {
       throw new Error("Could not reach the API: " + response.statusText);
     }
   }).then((data) => {
-    if (activateNotificationSlider) {
-      showNotificationBar(notificationBar);
-    }
+    if (activateNotificationSlider) { showNotificationBar(notificationBar); }
     getMinMax(modules);
   }).catch((error) => {
     console.log(error);
   });
 }
-
-
 checkAuthentication('all');
 
 const checkCartPriceChange = () => {
@@ -583,25 +466,29 @@ const checkCartPriceChange = () => {
     if (totalNode) {
       const total = Number(totalNode.innerText.replace(/[^0-9.-]+/g, ""));
       arrayTotal.push(total);
-      if (arrayTotal[arrayTotal.length - 1] !== arrayTotal[arrayTotal.length - 2]) {
-        checkAuthentication('miniCart');
-      }
+      if (arrayTotal[arrayTotal.length - 1] !== arrayTotal[arrayTotal.length - 2]) { checkAuthentication('miniCart'); }
     }
   }, 100)
 }
 
+function checkdisplay() {
+  const arrayTotal = [];
+  const totalNode = document.querySelector(checkoutClasses.totalPayment);
+  if (totalNode) {
+    const total = Number(totalNode.innerText.replace(/[^0-9.-]+/g, ""));
+    arrayTotal.push(total);
+    if (arrayTotal[arrayTotal.length - 1] !== arrayTotal[arrayTotal.length - 2]) { checkAuthentication('checkout'); }
+  }
+}
 const checkCheckoutPriceChange = () => {
   const arrayTotal = [];
-  setInterval(() => {
-    const totalNode = document.querySelector(checkoutClasses.totalPayment);
-    if (totalNode) {
-      const total = Number(totalNode.innerText.replace(/[^0-9.-]+/g, ""));
-      arrayTotal.push(total);
-      if (arrayTotal[arrayTotal.length - 1] !== arrayTotal[arrayTotal.length - 2]) {
-        checkAuthentication('checkout');
-      }
-    }
-  }, 100)
+  setInterval(() => { checkdisplay(); }, 100)
+}
+const x = document.querySelectorAll('button');
+for(let i=0;i<x.length;i++){
+  x[i].addEventListener('click',function(){
+    setInterval(() => { checkdisplay() },100)
+  });
 }
 
 const productVariationsCheck = () => {
@@ -620,17 +507,9 @@ const productVariationsCheck = () => {
   }
 }
 
-if (activateMiniCart) {
-  checkCartPriceChange();
-}
-
-if (checkoutSettingsExists) {
-  checkCheckoutPriceChange();
-}
-
-if (activateProductList) {
-  productVariationsCheck();
-}
+if (activateMiniCart) { checkCartPriceChange(); }
+if (checkoutSettingsExists) { checkCheckoutPriceChange(); }
+if (activateProductList) { productVariationsCheck(); }
 
 const addPopupBox = (min, max) => {
   var bannerImage = 'slider';
@@ -653,9 +532,8 @@ const addPopupBox = (min, max) => {
             <div class="popUpperpart" style="background-image: url('${openpayImgPath}/${bannerImage}.jpg');">
               <div class="allLogos">
                 <span><img src="${popUpMerchantLogo}"></span>
-                <span><img src="${openpayLogoPath}/${popUpOpenpayLogo}.png"></span>
               </div>
-              <h6 style="color: ${tagLineColor};">Buy now. Pay smarter</h6>
+              <h6 style="color: ${tagLineColor};">${taglines}</h6>
             </div>
             <div class="popLowerpart">
               <h4>Available on orders from ${op_currency}${min} - ${op_currency}${max}</h4>
@@ -675,11 +553,11 @@ const addPopupBox = (min, max) => {
               </ul>
             </div>
             <div class="popLastPart">
-              <p>If you are 18 years or older and a permanent resident of ${country_name} all you’ll need is a </p>
+              <p>If you are 18 years or older and a permanent resident of ${country_name} all youâ€™ll need is a </p>
               <div class="innerElements">
                 <span>Debit or Credit card</span>
                 <span>Email address</span>
-                <span>The required deposit</span>
+                <span>Todayâ€™s payment</span>
                 <span>Mobile phone</span>
               </div>
             </div>
@@ -694,12 +572,6 @@ const checkMultipleInfo = () => {
   const parent = document.querySelector('.summary');
   setInterval(() => {
     const infoElement = parent.querySelectorAll('.top-info');
-    if (infoElement.length > 1) {
-      infoElement[0].style.display = 'none';
-    } else {
-      infoElement[0].style.display = 'block';
-    }
+    if (infoElement.length > 1) { infoElement[0].style.display = 'none'; } else { infoElement[0].style.display = 'block'; }
   }, 100)
 }
-
-// checkMultipleInfo();
