@@ -126,14 +126,6 @@ var ProductListOpenpayInfo = {
 }
 ```
 
-```javascript
-// [ important authtoken ]
-{
-    fractional: "3-507|A4AEB753-EBBE-4AFF-8858-E2CB4CFEC348",
-    normal: "OP 3340|EC3C629D-CF23-4045-A07A-38A21D39AC16"
-}
-```
-
 
 &nbsp;
 ### 4. Add Mini Cart -
